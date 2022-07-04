@@ -1,0 +1,17 @@
+## how to find a reference gene of interest by mapping a fasta format genome against a reference
+
+for i in $(cat names-for-search.txt)
+do
+
+echo -e "\033[32mfinding NRPS in ${i} \033[m"
+
+bbmap.sh in=../${i}-fixed.fa out=${i}-NRPS.sam ref=gene-of-interest.fasta
+
+## make the sam file a fasta file
+samtools view -Sbh -o ${i}.bam ${i}.sam
+samtools sort -o ${i}.sorted.bam ${i}.bam
+reformat.sh in=${i}-NRPS.sorted.bam out=${i}-NRPS.fa mappedonly
+rm ${i}-NRPS.sam
+rm ${i}-NRPS.bam
+
+done
